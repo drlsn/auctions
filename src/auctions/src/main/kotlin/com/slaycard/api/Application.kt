@@ -12,3 +12,4 @@ fun Application.module() {
     configureMonitoring()
     configureRouting()
 }
+

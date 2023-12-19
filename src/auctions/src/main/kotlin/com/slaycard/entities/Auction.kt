@@ -1,12 +1,13 @@
+import com.slaycard.basic.Entity
 
 class Auction(
-    val id: AuctionId,
+    id: AuctionId,
     val auctionItemId: AuctionItemId,
     val quantity: Int,
     val originalPrice: Money,
     val name: String,
     val description: String = "",
-    val properties: PropertyList = emptyList()) {
+    val properties: PropertyList = emptyList()) : Entity<AuctionId>(id) {
 
     var currentPrice: Money = originalPrice
         get() = field
