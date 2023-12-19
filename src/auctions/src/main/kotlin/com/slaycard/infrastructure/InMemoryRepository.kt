@@ -4,12 +4,14 @@ import com.slaycard.basic.Entity
 import com.slaycard.basic.Repository
 import io.ktor.util.collections.*
 
+
 class InMemoryRepository<TEntity, TId> : Repository<TEntity, TId>
-    where TEntity: Entity<TId>  {
+    where TEntity: Entity<TId> {
 
     private val items: ConcurrentMap<TId, TEntity> = ConcurrentMap()
 
     override fun get(id: TId): TEntity? = items[id]
+    override fun getAll(): List<TEntity> = items.values.toList()
 
     override fun add(entity: TEntity): Boolean =
         when (items.containsKey(entity.id)) {

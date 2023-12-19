@@ -1,7 +1,6 @@
 package com.slaycard.api
 
-import com.slaycard.api.plugins.configureMonitoring
-import com.slaycard.api.plugins.configureRouting
+import com.slaycard.infrastructure.configureApp
 import io.ktor.server.application.*
 
 fun main(args: Array<String>) {
@@ -9,7 +8,5 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
-    configureMonitoring()
-    configureRouting()
+    configureApp()
 }
-
