@@ -1,7 +1,7 @@
-package com.slaycard
+package com.slaycard.api
 
-import com.slaycard.plugins.configureMonitoring
-import com.slaycard.plugins.configureRouting
+import com.slaycard.api.plugins.configureMonitoring
+import com.slaycard.api.plugins.configureRouting
 import io.ktor.server.application.*
 
 fun main(args: Array<String>) {

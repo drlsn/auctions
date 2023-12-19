@@ -1,4 +1,4 @@
-package com.slaycard.plugins
+package com.slaycard.api.plugins
 
 import io.ktor.server.application.*
 import io.ktor.server.response.*
