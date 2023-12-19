@@ -1,6 +1,6 @@
 package com.slaycard
 
-import com.slaycard.plugins.*
+import com.slaycard.plugins.configureRouting
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
