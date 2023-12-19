@@ -12,7 +12,7 @@ class Auction(
         get() = field
         private set (value) { field = value }
 
-    fun raise(money: Money): Boolean {
+    fun outbid(money: Money): Boolean {
         if (money <= currentPrice)
             return false
 

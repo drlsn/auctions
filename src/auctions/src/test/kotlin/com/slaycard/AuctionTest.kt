@@ -10,7 +10,7 @@ import kotlin.test.assertTrue
 
 class AuctionTest {
     @Test
-    fun should_raise_if_greater_price() {
+    fun should_outbid_if_greater_price() {
         val auction = Auction(
             AuctionId("auction-1"),
             AuctionItemId("auction-item-1"),
@@ -18,13 +18,13 @@ class AuctionTest {
             originalPrice = Money(100),
             name = "Uriziel's Sword")
 
-        val result = auction.raise(Money(200))
+        val result = auction.outbid(Money(200))
 
         assertTrue(result)
     }
 
     @Test
-    fun should_not_raise_if_same_or_smaller_price() {
+    fun should_not_outbid_if_same_or_smaller_price() {
         val auction = Auction(
             AuctionId("auction-1"),
             AuctionItemId("auction-item-1"),
@@ -32,7 +32,7 @@ class AuctionTest {
             originalPrice = Money(100),
             name = "Uriziel's Sword")
 
-        val result = auction.raise(Money(100))
+        val result = auction.outbid(Money(100))
 
         assertFalse(result)
     }
