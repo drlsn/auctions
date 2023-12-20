@@ -5,7 +5,10 @@ import AuctionId
 import AuctionItemId
 import Money
 import com.slaycard.basic.Repository
+import kotlinx.serialization.Serializable
 import java.util.UUID
+
+
 
 class AuctionsService(
     private val auctionRepository: Repository<Auction, AuctionId>)  {
@@ -14,17 +17,26 @@ class AuctionsService(
         return "What up!"
     }
 
-    fun getAll(): String =
+    @Serializable
+    data class GetAuctionQueryOut(val id: String, val name: String, val currentPrice: Int)
+    fun getAll(): List<GetAuctionQueryOut> =
         auctionRepository.getAll()
-            .map{ "Id: ${it.id.value}\nName: ${it.name}\nCurrent Price: ${it.currentPrice.value}" }
-            .reduce{ x, y -> x + y }
+            .map{ GetAuctionQueryOut(it.id.value, it.name, it.currentPrice.value) }
 
-    fun add(name: String, originalPrice: Int): Boolean =
-        auctionRepository.add(
+    @Serializable
+    data class CreateAuctionCommandIn(val name: String, val originalPrice: Int)
+    fun add(command: CreateAuctionCommandIn): Boolean {
+        if (command.name.isEmpty() || command.originalPrice < 0)
+            return false
+
+        return auctionRepository.add(
             Auction(
                 AuctionId(UUID.randomUUID().toString()),
                 AuctionItemId(UUID.randomUUID().toString()),
                 quantity = 1,
-                Money(originalPrice),
-                name))
+                Money(command.originalPrice),
+                command.name
+            )
+        )
+    }
 }
