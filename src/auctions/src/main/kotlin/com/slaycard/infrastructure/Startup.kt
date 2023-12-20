@@ -6,10 +6,11 @@ import AuctionItemId
 import Money
 import com.slaycard.api.plugins.configureMonitoring
 import com.slaycard.api.plugins.configureRouting
-import com.slaycard.application.AuctionsService
 import com.slaycard.basic.Repository
+import com.slaycard.application.CreateAuctionCommandHandler
+import com.slaycard.application.GetAuctionQueryHandler
+import com.slaycard.application.GetAuctionsQueryHandler
 import io.ktor.serialization.kotlinx.json.*
-import io.ktor.serialization.kotlinx.xml.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.contentnegotiation.*
 import org.koin.core.component.KoinScopeComponent
@@ -47,7 +48,9 @@ val auctionsModule = module {
         repo
     }
     scope<RequestScope> {
-        scopedOf(::AuctionsService)
+        scopedOf(::CreateAuctionCommandHandler)
+        scopedOf(::GetAuctionQueryHandler)
+        scopedOf(::GetAuctionsQueryHandler)
     }
 }
 

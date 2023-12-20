@@ -1,44 +1,32 @@
 package com.slaycard.api.plugins
 
-import com.slaycard.application.AuctionsService
-import com.slaycard.infrastructure.RequestScope
-import io.ktor.http.*
+import com.slaycard.api.contracts.CreateAuctionApiCommand
+import com.slaycard.api.contracts.GetAuctionApiQuery
+import com.slaycard.api.contracts.GetAuctionsApiQuery
+import com.slaycard.application.*
 import io.ktor.server.application.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.coroutines.launch
-import org.koin.core.scope.Scope
-import org.koin.java.KoinJavaComponent.getKoin
 
 const val AUCTIONS_ROUTE = "/auctions"
 
 fun Application.configureRouting() {
     routing {
+        get("$AUCTIONS_ROUTE/{id}") {
+            executeQueryHandler<GetAuctionApiQuery, GetAuctionQuery, GetAuctionQuery.AuctionDTO, GetAuctionQueryHandler> {
+                GetAuctionQuery(it["id"]!!)
+            }
+        }
+
         get(AUCTIONS_ROUTE) {
-            executeScopedAction {
-                launch {
-                    call.respond(
-                        it.get<AuctionsService>().getAll())
-                }
+            executeQueryHandler<GetAuctionsApiQuery, GetAuctionsQuery, GetAuctionsQuery.AuctionsDTO, GetAuctionsQueryHandler> {
+                GetAuctionsQuery()
             }
         }
 
         post(AUCTIONS_ROUTE) {
-            executeScopedAction {
-                launch {
-                    val command = call.receive<AuctionsService.CreateAuctionCommandIn>()
-                    when (it.get<AuctionsService>().add(command)) {
-                        true -> call.response.status(HttpStatusCode.OK)
-                        false -> call.response.status(HttpStatusCode.BadRequest)
-                    }
-                }
+            executeCommandHandler<CreateAuctionApiCommand, CreateAuctionCommand, CreateAuctionCommandHandler> {
+                CreateAuctionCommand(it.name, it.originalPrice)
             }
         }
     }
 }
-
-fun executeScopedAction(f: (Scope) -> Unit) =
-    getKoin()
-        .createScope<RequestScope>()
-        .also { f(it); it.close() }
