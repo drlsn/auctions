@@ -10,30 +10,30 @@ import kotlin.test.assertTrue
 
 class AuctionTest {
     @Test
-    fun should_outbid_if_greater_price() {
+    fun should_outbid_if_price_greater_by_5_percent() {
         val auction = Auction(
             AuctionId("auction-1"),
+            name = "Uriziel's Sword",
             AuctionItemId("auction-item-1"),
             quantity = 1,
-            originalPrice = Money(100),
-            name = "Uriziel's Sword")
+            startingPrice = Money(100))
 
-        val result = auction.outbid(Money(200))
+        val result = auction.outbid(Money(105))
 
-        assertTrue(result)
+        assertTrue(result.isSuccess)
     }
 
     @Test
-    fun should_not_outbid_if_same_or_smaller_price() {
+    fun should_not_outbid_if_price_not_greater_than_5_percent() {
         val auction = Auction(
             AuctionId("auction-1"),
+            name = "Uriziel's Sword",
             AuctionItemId("auction-item-1"),
             quantity = 1,
-            originalPrice = Money(100),
-            name = "Uriziel's Sword")
+            startingPrice = Money(100))
 
-        val result = auction.outbid(Money(100))
+        val result = auction.outbid(Money(104))
 
-        assertFalse(result)
+        assertFalse(result.isSuccess)
     }
 }

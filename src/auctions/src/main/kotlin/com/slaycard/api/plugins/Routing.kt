@@ -3,6 +3,7 @@ package com.slaycard.api.plugins
 import com.slaycard.api.contracts.CreateAuctionApiCommand
 import com.slaycard.api.contracts.GetAuctionApiQuery
 import com.slaycard.api.contracts.GetAuctionsApiQuery
+import com.slaycard.api.contracts.OutbidAuctionApiCommand
 import com.slaycard.application.*
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
@@ -11,21 +12,31 @@ const val AUCTIONS_ROUTE = "/auctions"
 
 fun Application.configureRouting() {
     routing {
-        get("$AUCTIONS_ROUTE/{id}") {
+        get("/auctions/{auctionId}") {
             executeQueryHandler<GetAuctionApiQuery, GetAuctionQuery, GetAuctionQuery.AuctionDTO, GetAuctionQueryHandler> {
-                GetAuctionQuery(it["id"]!!)
+                routeParams, queryParams, result ->
+                GetAuctionQuery(routeParams["auctionId"]!!)
             }
         }
 
-        get(AUCTIONS_ROUTE) {
+        get("/auctions") {
             executeQueryHandler<GetAuctionsApiQuery, GetAuctionsQuery, GetAuctionsQuery.AuctionsDTO, GetAuctionsQueryHandler> {
+                routeParams, queryParams, result ->
                 GetAuctionsQuery()
             }
         }
 
-        post(AUCTIONS_ROUTE) {
+        post("/auctions") {
             executeCommandHandler<CreateAuctionApiCommand, CreateAuctionCommand, CreateAuctionCommandHandler> {
-                CreateAuctionCommand(it.name, it.originalPrice)
+                routeParams, apiCommand ->
+                CreateAuctionCommand(apiCommand.name, apiCommand.originalPrice)
+            }
+        }
+
+        post("/auctions/{auctionId}/bids") {
+            executeCommandHandler<OutbidAuctionApiCommand, OutbidAuctionCommand, OutbidAuctionCommandHandler> {
+                routeParams, apiCommand ->
+                OutbidAuctionCommand(routeParams["auctionId"]!!, apiCommand.newPrice)
             }
         }
     }

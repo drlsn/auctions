@@ -15,7 +15,8 @@ class GetAuctionsQueryHandler(
     override fun handle(query: GetAuctionsQuery): ResultT<GetAuctionsQuery.AuctionsDTO> =
         resultActionOfT {
             GetAuctionsQuery.AuctionsDTO(auctionRepository.getAll().map {
-                GetAuctionsQuery.AuctionDTO(it.id.value, it.name, it.originalPrice.value)
+                GetAuctionsQuery.AuctionDTO(
+                    it.id.value, it.name, it.startingPrice.value, it.currentPrice.value)
             })
         }
 }
@@ -30,6 +31,7 @@ class GetAuctionsQuery {
     data class AuctionDTO(
         val id: String,
         val name: String,
-        val originalPrice: Int)
+        val originalPrice: Int,
+        val currentPrice: Int)
 
 }

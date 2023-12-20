@@ -2,12 +2,12 @@ package com.slaycard.infrastructure
 
 import Auction
 import AuctionId
-import AuctionItemId
 import Money
 import com.slaycard.api.plugins.configureMonitoring
 import com.slaycard.api.plugins.configureRouting
 import com.slaycard.basic.Repository
 import com.slaycard.application.CreateAuctionCommandHandler
+import com.slaycard.application.OutbidAuctionCommandHandler
 import com.slaycard.application.GetAuctionQueryHandler
 import com.slaycard.application.GetAuctionsQueryHandler
 import io.ktor.serialization.kotlinx.json.*
@@ -38,19 +38,16 @@ fun Application.configureApp() {
 val auctionsModule = module {
     single<Repository<Auction, AuctionId>> {
         val repo = InMemoryRepository<Auction, AuctionId>()
-        val auction =
-            repo.add(Auction(
-                AuctionId("auction-1"),
-                AuctionItemId("auction-item-1"),
-                quantity = 1,
-                originalPrice = Money(100),
-                name = "Uriziel's Sword"))
+        val result = Auction.create("Uriziel's Sword", Money(100))
+        if (result.isSuccess && result.value != null)
+            repo.add(result.value)
         repo
     }
     scope<RequestScope> {
         scopedOf(::CreateAuctionCommandHandler)
         scopedOf(::GetAuctionQueryHandler)
         scopedOf(::GetAuctionsQueryHandler)
+        scopedOf(::OutbidAuctionCommandHandler)
     }
 }
 

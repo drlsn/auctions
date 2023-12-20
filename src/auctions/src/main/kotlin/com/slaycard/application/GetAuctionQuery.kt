@@ -21,7 +21,7 @@ class GetAuctionQueryHandler(
                 return@resultActionOfT null
             }
 
-            GetAuctionQuery.AuctionDTO(auction.id.value, auction.name, auction.originalPrice.value)
+            GetAuctionQuery.AuctionDTO(auction.id.value, auction.name, auction.startingPrice.value)
         }
 
 }

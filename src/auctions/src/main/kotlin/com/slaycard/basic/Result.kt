@@ -1,5 +1,6 @@
 package com.slaycard.basic
 
+import com.slaycard.basic.Message.Companion.containErrors
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -7,15 +8,16 @@ open class Result(
     open val messages: MutableList<Message> = mutableListOf()) {
 
     open val isSuccess: Boolean
-        get() = messages
-            .flatMap{ it.subMessages }
-            .all{ it.level != MessageLevel.error }
+        get() = !messages.containErrors()
 
     operator fun plus(other: Result): Result =
         Result((this.messages + other.messages).toMutableList())
 
-    fun fail(message: String) =
+    fun fail(message: String): Boolean =
         messages.add(Message(MessageLevel.error, message))
+
+    fun add(other: Result): Boolean =
+        messages.addAll(other.messages)
 }
 
 @Serializable
@@ -47,8 +49,18 @@ class ResultOf<T>(messages: MutableList<Message>) : Result(messages) {}
 fun failure(message: String) = Result(mutableListOf(Message(MessageLevel.error, message)))
 fun success() = Result()
 
+fun Result.addTo(other: Result): Boolean = other.add(this)
+
 @Serializable
-data class Message(val level: MessageLevel, val content: String, val subMessages: List<Message> = emptyList())
+data class Message(val level: MessageLevel, val content: String, val subMessages: List<Message> = emptyList()) {
+
+    companion object {
+        fun Iterable<Message>.containErrors(): Boolean =
+            this.any{
+                it.level == MessageLevel.error || it.subMessages.containErrors()
+            }
+    }
+}
 
 @Serializable
 data class MessageLevel(val name: String) {
