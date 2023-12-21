@@ -1,6 +1,9 @@
 # Auction API
 
+&nbsp;&nbsp;&nbsp;&nbsp; Auction service which goal is to serve in an internal network of a distributed system.
+
 ### Technologies
+
 &nbsp;&nbsp;&nbsp;&nbsp; Kotlin, Ktor, SQL, PostgreSQL, Firebase Authenication
 
 ### API
