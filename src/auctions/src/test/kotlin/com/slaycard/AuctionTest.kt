@@ -13,15 +13,13 @@ import kotlin.test.assertTrue
 
 class AuctionTest {
 
-    val timeNow = LocalDateTime(2023, 2, 28, 0, 0, 0, 0)
+    private val timeNow = LocalDateTime(2023, 2, 28, 0, 0, 0, 0)
 
     @Test
     fun should_not_be_finished_after_creation() {
         val auction = Auction(timeNow = timeNow)
 
-        val period = DateTimePeriod(hours = 71)
-        val newTime = timeNow + period
-        assertFalse(auction.isFinished(timeNow + period))
+        assertFalse(auction.isFinished(timeNow + DateTimePeriod(hours = 71)))
     }
 
     @Test
@@ -44,4 +42,8 @@ class AuctionTest {
         assertFalse(result.isSuccess)
         assertFalse(auction.events.any{ it is AuctionPriceOutbidEvent })
     }
+
+//    @Test
+//    fun test() {
+//    }
 }

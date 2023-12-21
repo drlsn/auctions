@@ -6,7 +6,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
 @Serializable
-open class DomainEvent(
-    val id: String = uuid64(),
-    val utcTimeOccurred: LocalDateTime = getUtcTimeNow()
-)
+abstract class DomainEvent {
+    abstract val id: String
+    abstract val utcTimeOccurred: LocalDateTime
+}
