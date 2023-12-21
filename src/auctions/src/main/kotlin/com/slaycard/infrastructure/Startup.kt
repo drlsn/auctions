@@ -2,7 +2,7 @@ package com.slaycard.infrastructure
 
 import Auction
 import AuctionId
-import Money
+import com.slaycard.entities.Money
 import com.slaycard.api.plugins.configureMonitoring
 import com.slaycard.api.plugins.configureRouting
 import com.slaycard.basic.Repository
@@ -42,9 +42,7 @@ fun Application.configureApp() {
 val auctionsModule = module {
     single<Repository<Auction, AuctionId>> {
         val repo = InMemoryRepository<Auction, AuctionId>()
-        val result = Auction.create("Uriziel's Sword", Money(100))
-        if (result.isSuccess && result.value != null)
-            repo.add(result.value)
+        repo.add(Auction.createDefault("Uriziel's Sword", Money(100)))
         repo
     }
 

@@ -2,11 +2,8 @@ package com.slaycard.application
 
 import Auction
 import AuctionId
-import AuctionItemId
-import Money
 import com.slaycard.basic.Repository
 import kotlinx.serialization.Serializable
-import java.util.UUID
 
 class AuctionsService(
     private val auctionRepository: Repository<Auction, AuctionId>)  {

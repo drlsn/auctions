@@ -49,7 +49,10 @@ class ResultOf<T>(messages: MutableList<Message>) : Result(messages) {}
 fun failure(message: String) = Result(mutableListOf(Message(MessageLevel.error, message)))
 fun success() = Result()
 
-fun Result.addTo(other: Result): Boolean = other.add(this)
+fun Result.addTo(other: Result): Result {
+    other.add(this)
+    return this
+}
 
 @Serializable
 data class Message(val level: MessageLevel, val content: String, val subMessages: List<Message> = emptyList()) {
