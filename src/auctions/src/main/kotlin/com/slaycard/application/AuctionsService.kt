@@ -2,11 +2,12 @@ package com.slaycard.application
 
 import Auction
 import AuctionId
-import com.slaycard.basic.Repository
+import com.slaycard.basic.domain.Repository
 import kotlinx.serialization.Serializable
 
 class AuctionsService(
-    private val auctionRepository: Repository<Auction, AuctionId>)  {
+    private val auctionRepository: Repository<Auction, AuctionId>
+)  {
 
     fun get(id: String): String {
         return "What up!"

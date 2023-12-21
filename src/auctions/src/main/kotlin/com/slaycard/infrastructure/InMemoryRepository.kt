@@ -1,7 +1,7 @@
 package com.slaycard.infrastructure
 
-import com.slaycard.basic.Entity
-import com.slaycard.basic.Repository
+import com.slaycard.basic.domain.Entity
+import com.slaycard.basic.domain.Repository
 import io.ktor.util.collections.*
 
 

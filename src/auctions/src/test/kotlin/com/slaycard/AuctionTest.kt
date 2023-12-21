@@ -1,7 +1,6 @@
 package com.slaycard
 
 import Auction
-import com.slaycard.basic.getUtcTimeNow
 import com.slaycard.entities.Money
 import com.slaycard.entities.events.AuctionPriceOutbidEvent
 import junit.framework.TestCase.assertFalse

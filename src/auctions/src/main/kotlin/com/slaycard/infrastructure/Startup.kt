@@ -5,7 +5,7 @@ import AuctionId
 import com.slaycard.entities.Money
 import com.slaycard.api.plugins.configureMonitoring
 import com.slaycard.api.plugins.configureRouting
-import com.slaycard.basic.Repository
+import com.slaycard.basic.domain.Repository
 import com.slaycard.application.CreateAuctionCommandHandler
 import com.slaycard.application.OutbidAuctionCommandHandler
 import com.slaycard.application.GetAuctionQueryHandler

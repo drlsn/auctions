@@ -1,4 +1,4 @@
-package com.slaycard.basic
+package com.slaycard.basic.domain
 
 interface Repository<TEntity, TId>
     where TEntity: Entity<TId> {

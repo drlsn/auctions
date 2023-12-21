@@ -4,14 +4,15 @@ import Auction
 import AuctionId
 import com.slaycard.entities.Money
 import com.slaycard.basic.cqrs.CommandHandler
-import com.slaycard.basic.Repository
+import com.slaycard.basic.domain.Repository
 import kotlinx.serialization.Serializable
 import com.slaycard.basic.Result
 import com.slaycard.basic.addTo
 import com.slaycard.basic.resultAction
 
 class OutbidAuctionCommandHandler(
-    private val auctionRepository: Repository<Auction, AuctionId>)
+    private val auctionRepository: Repository<Auction, AuctionId>
+)
     : CommandHandler<OutbidAuctionCommand> {
 
     override fun handle(command: OutbidAuctionCommand): Result =

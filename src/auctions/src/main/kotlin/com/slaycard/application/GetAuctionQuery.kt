@@ -4,10 +4,12 @@ import Auction
 import AuctionId
 import com.slaycard.basic.*
 import com.slaycard.basic.cqrs.QueryHandler
+import com.slaycard.basic.domain.Repository
 import kotlinx.serialization.Serializable
 
 class GetAuctionQueryHandler(
-    private val auctionRepository: Repository<Auction, AuctionId>)
+    private val auctionRepository: Repository<Auction, AuctionId>
+)
     : QueryHandler<GetAuctionQuery, GetAuctionQuery.AuctionDTO> {
 
     override fun handle(query: GetAuctionQuery): ResultT<GetAuctionQuery.AuctionDTO> =
