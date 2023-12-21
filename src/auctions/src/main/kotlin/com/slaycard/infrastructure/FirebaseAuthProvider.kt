@@ -1,15 +1,54 @@
-package com.slaycard.api
+package com.slaycard.infrastructure
 
+import com.google.auth.oauth2.GoogleCredentials
+import com.google.firebase.FirebaseApp
+import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseToken
-import com.slaycard.infrastructure.FirebaseConfig
-import com.slaycard.infrastructure.User
 import io.ktor.http.auth.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.InputStream
+
+object FirebaseAdmin {
+    private val serviceAccount: InputStream? =
+        this::class.java.classLoader.getResourceAsStream("slaycard-auction-firebase-adminsdk.json")
+
+    private val options: FirebaseOptions = FirebaseOptions.builder()
+        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+        .build()
+
+    fun init(): FirebaseApp = FirebaseApp.initializeApp(options)
+}
+
+class FirebaseConfig(name: String?) : AuthenticationProvider.Config(name) {
+    internal var authHeader: (ApplicationCall) -> HttpAuthHeader? =
+        { call -> call.request.parseAuthorizationHeaderOrNull() }
+
+    var firebaseAuthenticationFunction: AuthenticationFunction<FirebaseToken> = {
+        throw NotImplementedError(FirebaseImplementationError)
+    }
+
+    fun validate(validate: suspend ApplicationCall.(FirebaseToken) -> User?) {
+        firebaseAuthenticationFunction = validate
+    }
+}
+
+fun ApplicationRequest.parseAuthorizationHeaderOrNull(): HttpAuthHeader? = try {
+    parseAuthorizationHeader()
+} catch (ex: IllegalArgumentException) {
+    println("failed to parse token")
+    null
+}
+
+private const val FirebaseImplementationError =
+    "Firebase  auth validate function is not specified, use firebase { validate { ... } } to fix this"
+
+data class User(val userId: String = "", val displayName: String = "") : Principal
 
 class FirebaseAuthProvider(config: FirebaseConfig) : AuthenticationProvider(config) {
     val authHeader: (ApplicationCall) -> HttpAuthHeader? = config.authHeader
@@ -21,8 +60,8 @@ class FirebaseAuthProvider(config: FirebaseConfig) : AuthenticationProvider(conf
         if (token == null) {
             context.challenge(
                 FirebaseJWTAuthKey,
-                AuthenticationFailedCause.InvalidCredentials
-            ) { challengeFunc, call ->
+                AuthenticationFailedCause.InvalidCredentials) {
+                challengeFunc, call ->
                 challengeFunc.complete()
                 call.respond(UnauthorizedResponse(HttpAuthHeader.bearerAuthChallenge(realm = FIREBASE_AUTH)))
             }
@@ -32,9 +71,9 @@ class FirebaseAuthProvider(config: FirebaseConfig) : AuthenticationProvider(conf
         try {
             val principal = verifyFirebaseIdToken(context.call, token, authFunction)
 
-            if (principal != null) {
+            if (principal != null)
                 context.principal(principal)
-            }
+
         } catch (cause: Throwable) {
             val message = cause.message ?: cause.javaClass.simpleName
             context.error(FirebaseJWTAuthKey, AuthenticationFailedCause.Error(message))
@@ -47,14 +86,17 @@ suspend fun verifyFirebaseIdToken(
     authHeader: HttpAuthHeader,
     tokenData: suspend ApplicationCall.(FirebaseToken) -> Principal?
 ): Principal? {
-    val token: FirebaseToken = try {
-        if (authHeader.authScheme == "Bearer" && authHeader is HttpAuthHeader.Single) {
-            withContext(Dispatchers.IO) {
+    val token: FirebaseToken = try
+    {
+        if (authHeader.authScheme == "Bearer" && authHeader is HttpAuthHeader.Single)
+        {
+            withContext(Dispatchers.IO)
+            {
                 FirebaseAuth.getInstance().verifyIdToken(authHeader.blob)
             }
-        } else {
-            null
         }
+        else
+            null
     } catch (ex: Exception) {
         ex.printStackTrace()
         return null

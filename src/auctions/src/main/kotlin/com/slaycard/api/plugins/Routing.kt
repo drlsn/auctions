@@ -1,6 +1,6 @@
 package com.slaycard.api.plugins
 
-import com.slaycard.api.FIREBASE_AUTH
+import com.slaycard.infrastructure.FIREBASE_AUTH
 import com.slaycard.api.contracts.CreateAuctionApiCommand
 import com.slaycard.api.contracts.GetAuctionApiQuery
 import com.slaycard.api.contracts.GetAuctionsApiQuery
