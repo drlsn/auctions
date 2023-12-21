@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
 data class AuctionStartedEvent(
     val auction: AuctionId,
     val byUser: UserId,
-    val name: String,
+    val itemName: String,
     val startingPrice: Money,
     val quantity: Int,
     val description: String,

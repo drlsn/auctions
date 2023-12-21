@@ -5,6 +5,7 @@ import AuctionId
 import com.slaycard.basic.domain.Repository
 import com.slaycard.basic.ResultT
 import com.slaycard.basic.cqrs.QueryHandler
+import com.slaycard.basic.getUtcTimeNow
 import com.slaycard.basic.resultActionOfT
 import kotlinx.serialization.Serializable
 
@@ -15,24 +16,16 @@ class GetAuctionsQueryHandler(
 
     override fun handle(query: GetAuctionsQuery): ResultT<GetAuctionsQuery.AuctionsDTO> =
         resultActionOfT {
-            GetAuctionsQuery.AuctionsDTO(auctionRepository.getAll().map {
-                GetAuctionsQuery.AuctionDTO(
-                    it.id.value, it.name, it.startingPrice.value, it.currentPrice.value)
-            })
+            GetAuctionsQuery.AuctionsDTO(
+                auctionRepository.getAll().map {
+                    it.toDTO(getUtcTimeNow())
+                }
+            )
         }
 }
 
 @Serializable
 class GetAuctionsQuery {
-
     @Serializable
-    data class AuctionsDTO(val auctions: List<AuctionDTO>)
-
-    @Serializable
-    data class AuctionDTO(
-        val id: String,
-        val name: String,
-        val originalPrice: Int,
-        val currentPrice: Int)
-
+    data class AuctionsDTO(val auctions: List<GetAuctionQuery.AuctionDTO>)
 }

@@ -4,6 +4,8 @@ import com.slaycard.basic.domain.Entity
 import com.slaycard.entities.AuctionItemId
 import com.slaycard.entities.Money
 import com.slaycard.entities.UserId
+import com.slaycard.entities.events.AuctionCancelledEvent
+import com.slaycard.entities.events.AuctionFinishedEvent
 import com.slaycard.entities.events.AuctionPriceOutbidEvent
 import com.slaycard.entities.events.AuctionStartedEvent
 import kotlinx.datetime.DateTimePeriod
@@ -13,13 +15,13 @@ import kotlinx.serialization.Serializable
 typealias PropertyList = List<Pair<String, String>>
 
 class Auction(
-    id: AuctionId,
-    val byUser: UserId,
-    val name: String,
-    val auctionItemId: AuctionItemId,
-    val quantity: Int,
-    val startingPrice: Money,
-    val durationHours: Int = 72,
+    id: AuctionId = AuctionId(uuid64()),
+    val sellingUser: UserId = UserId(uuid64()),
+    val auctionItemName: String = "Default Item",
+    val auctionItemId: AuctionItemId = AuctionItemId(uuid64()),
+    val quantity: Int = 1,
+    val startingPrice: Money = Money(100),
+    val originalDurationHours: Int = 72,
     val description: String = "",
     val properties: PropertyList = emptyList(),
     timeNow: LocalDateTime = getUtcTimeNow())
@@ -28,12 +30,12 @@ class Auction(
     init {
         events.add(
             AuctionStartedEvent(
-                id, byUser,name, startingPrice, quantity, description, properties, timeNow, durationHours))
+                id, sellingUser, auctionItemName, startingPrice, quantity, description, properties, timeNow, originalDurationHours))
     }
 
     fun validate(): Result =
         resultActionOfT { result ->
-            if (name.isEmpty())
+            if (auctionItemName.isEmpty())
                 result.fail("The name must contain characters")
 
             if (!startingPrice.isValid())
@@ -45,31 +47,64 @@ class Auction(
         private set (value) { field = value }
 
     val startTime: LocalDateTime = timeNow
-    val endTime: LocalDateTime get() = startTime + DateTimePeriod(hours = durationHours)
+    val endTime: LocalDateTime get() =
+        when (cancelTime == null) {
+            true -> startTime + DateTimePeriod(hours = originalDurationHours)
+            false -> cancelTime as LocalDateTime
+        }
+
+    private var cancelTime: LocalDateTime? = null
+    var lastBiddingUser: UserId? = null
+        private set
 
     fun isFinished(timeNow: LocalDateTime): Boolean = timeNow >= endTime
+    fun isCancelled(): Boolean = cancelTime != null
 
-    fun outbid(money: Money): Result {
+    fun outbid(money: Money, user: UserId, timeNow: LocalDateTime = getUtcTimeNow()): Result {
+        if (isFinished(timeNow))
+            return failure("Can't outbid - The auction has finished")
+
         if (money.value < currentPrice.value * 1.05)
             return failure("The new price must be greater than previous by 5% or more")
 
-        currentPrice = money
+        if (lastBiddingUser != null && user == lastBiddingUser)
+            return failure("Can't outbid if already has outbid by the same user")
 
-        events.add(AuctionPriceOutbidEvent(id, byUser, money))
+        if (user == sellingUser)
+            return failure("Can't bid own auction")
+
+        currentPrice = money
+        lastBiddingUser = user
+
+        events.add(AuctionPriceOutbidEvent(id, auctionItemName, user, money))
 
         return success()
     }
 
+    fun cancel(timeNow: LocalDateTime = getUtcTimeNow()): Result {
+        if (isCancelled())
+            return failure("Can't cancel already cancelled auction")
 
-    companion object {
-        fun createDefault(name: String = "auction-1", startingPrice: Money = Money(100), quantity: Int = 1): Auction =
-           Auction(
-                AuctionId(uuid64()),
-                UserId(uuid64()),
-                name,
-                AuctionItemId(uuid64()),
-                quantity,
-                startingPrice)
+        if (isFinished(timeNow))
+            return failure("Can't cancel already finished auction")
+
+        cancelTime = timeNow
+
+        events.add(AuctionCancelledEvent(id, auctionItemName, currentPrice, timeNow))
+
+        return success()
+    }
+
+    fun finish(timeNow: LocalDateTime = getUtcTimeNow()): Result {
+        if (isCancelled())
+            return failure("Can't finish the auction because it was cancelled")
+
+        if (isFinished(timeNow))
+            return failure("Can't finish the auction before end time")
+
+        events.add(AuctionFinishedEvent(id, auctionItemName, currentPrice, lastBiddingUser, timeNow))
+
+        return success()
     }
 }
 

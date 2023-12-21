@@ -42,7 +42,7 @@ fun Application.configureApp() {
 val auctionsModule = module {
     single<Repository<Auction, AuctionId>> {
         val repo = InMemoryRepository<Auction, AuctionId>()
-        repo.add(Auction.createDefault("Uriziel's Sword", Money(100)))
+        repo.add(Auction(auctionItemName = "Uriziel's Sword", startingPrice = Money(100)))
         repo
     }
 

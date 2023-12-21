@@ -1,15 +1,18 @@
 package com.slaycard.entities.events
 
 import AuctionId
+import PropertyList
 import com.slaycard.basic.domain.DomainEvent
 import com.slaycard.entities.Money
 import com.slaycard.entities.UserId
+import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AuctionPriceOutbidEvent(
+data class AuctionFinishedEvent(
     val auction: AuctionId,
     val itemName: String,
-    val byUser: UserId,
-    val newPrice: Money
+    val price: Money,
+    val winner: UserId?,
+    val endTime: LocalDateTime,
 ) : DomainEvent()

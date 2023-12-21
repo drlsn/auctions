@@ -9,6 +9,7 @@ import kotlinx.serialization.Serializable
 import com.slaycard.basic.Result
 import com.slaycard.basic.addTo
 import com.slaycard.basic.resultAction
+import com.slaycard.entities.UserId
 
 class OutbidAuctionCommandHandler(
     private val auctionRepository: Repository<Auction, AuctionId>
@@ -23,7 +24,7 @@ class OutbidAuctionCommandHandler(
                 return@resultAction
             }
 
-            auction.outbid(Money(command.money)).addTo(result)
+            auction.outbid(Money(command.money), UserId(command.userId)).addTo(result)
             if (!result.isSuccess)
                return@resultAction
 
@@ -34,5 +35,6 @@ class OutbidAuctionCommandHandler(
 
 @Serializable
 data class OutbidAuctionCommand(
+    val userId: String,
     val auctionId: String,
     val money: Int)

@@ -17,5 +17,5 @@ class AuctionsService(
     data class GetAuctionQueryOut(val id: String, val name: String, val currentPrice: Int)
     fun getAll(): List<GetAuctionQueryOut> =
         auctionRepository.getAll()
-            .map{ GetAuctionQueryOut(it.id.value, it.name, it.currentPrice.value) }
+            .map{ GetAuctionQueryOut(it.id.value, it.auctionItemName, it.currentPrice.value) }
 }

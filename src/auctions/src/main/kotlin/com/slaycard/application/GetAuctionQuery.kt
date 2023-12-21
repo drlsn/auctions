@@ -5,6 +5,7 @@ import AuctionId
 import com.slaycard.basic.*
 import com.slaycard.basic.cqrs.QueryHandler
 import com.slaycard.basic.domain.Repository
+import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
 class GetAuctionQueryHandler(
@@ -23,18 +24,39 @@ class GetAuctionQueryHandler(
                 return@resultActionOfT null
             }
 
-            GetAuctionQuery.AuctionDTO(auction.id.value, auction.name, auction.startingPrice.value)
+            auction.toDTO(getUtcTimeNow())
         }
-
 }
 
 @Serializable
 data class GetAuctionQuery(val auctionId: String) {
-
     @Serializable
     data class AuctionDTO(
         val id: String,
-        val name: String,
-        val originalPrice: Int)
-
+        val sellingUserId: String,
+        val itemName: String,
+        val description: String,
+        val quantity: Int,
+        val startingPrice: Int,
+        val startTime: String,
+        val originalDurationHours: Int,
+        val hasFinished: Boolean,
+        val wasCancelled: Boolean,
+        val winnerId: String?,
+        val cancelTime: String?)
 }
+
+fun Auction.toDTO(timeNow: LocalDateTime): GetAuctionQuery.AuctionDTO =
+    GetAuctionQuery.AuctionDTO(
+        this.id.value,
+        this.sellingUser.value,
+        this.auctionItemName,
+        this.description,
+        this.quantity,
+        this.startingPrice.value,
+        this.startTime.toString(),
+        this.originalDurationHours,
+        this.isFinished(timeNow),
+        this.isCancelled(),
+        this.lastBiddingUser?.value,
+        cancelTime = if (this.isCancelled()) this.endTime.toString() else null)

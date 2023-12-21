@@ -41,7 +41,7 @@ fun Application.configureRouting() {
         post("/auctions/{auctionId}/bids") {
             executeCommandHandler<OutbidAuctionApiCommand, OutbidAuctionCommand, OutbidAuctionCommandHandler> {
                 routeParams, apiCommand ->
-                OutbidAuctionCommand(routeParams["auctionId"]!!, apiCommand.newPrice)
+                OutbidAuctionCommand("", routeParams["auctionId"]!!, apiCommand.newPrice)
             }
         }
 

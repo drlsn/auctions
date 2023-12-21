@@ -17,7 +17,7 @@ class CreateAuctionCommandHandler(
 
     override fun handle(command: CreateAuctionCommand): Result =
         resultAction { result ->
-            val auction = Auction.createDefault(command.name, Money(command.originalPrice))
+            val auction = Auction(auctionItemName = command.name, startingPrice = Money(command.originalPrice))
             if (!auction.validate().addTo(result).isSuccess)
                 return@resultAction
 
