@@ -34,3 +34,5 @@ out/
 
 ### VS Code ###
 .vscode/
+
+slaycard-auction-firebase-adminsdk.json
