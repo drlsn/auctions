@@ -1,4 +1,4 @@
-# Auction API
+# Auctions API
 
 &nbsp;&nbsp;&nbsp;&nbsp; Auction service which goal is to serve in an internal network of a distributed system.
 
