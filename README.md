@@ -4,7 +4,7 @@
 
 ### Technologies
 
-&nbsp;&nbsp;&nbsp;&nbsp; Kotlin, Ktor, SQL, PostgreSQL, Firebase Authentication
+&nbsp;&nbsp;&nbsp;&nbsp; Kotlin, Ktor, Exposed/PostgreSQL, Firebase Authentication
 
 ### API
 
