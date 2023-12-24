@@ -1,4 +1,4 @@
-package com.slaycard.entities
+package com.slaycard.entities.shared
 
 import kotlinx.serialization.Serializable
 

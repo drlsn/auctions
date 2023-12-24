@@ -5,7 +5,7 @@ import com.slaycard.api.contracts.CreateAuctionApiCommand
 import com.slaycard.api.contracts.GetAuctionApiQuery
 import com.slaycard.api.contracts.GetAuctionsApiQuery
 import com.slaycard.api.contracts.OutbidAuctionApiCommand
-import com.slaycard.application.*
+import com.slaycard.useCases.*
 import com.slaycard.infrastructure.User
 import io.ktor.http.*
 import io.ktor.server.application.*

@@ -2,8 +2,8 @@ package com.slaycard
 
 import Auction
 import com.slaycard.basic.plus
-import com.slaycard.entities.Money
-import com.slaycard.entities.UserId
+import com.slaycard.entities.shared.Money
+import com.slaycard.entities.shared.UserId
 import com.slaycard.entities.events.AuctionPriceOutbidEvent
 import junit.framework.TestCase.assertFalse
 import kotlinx.datetime.DateTimePeriod

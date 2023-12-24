@@ -1,8 +1,8 @@
-package com.slaycard.application
+package com.slaycard.useCases
 
 import Auction
 import AuctionId
-import com.slaycard.basic.domain.Repository
+import com.slaycard.entities.roots.AuctionRepository
 import com.slaycard.basic.ResultT
 import com.slaycard.basic.cqrs.QueryHandler
 import com.slaycard.basic.getUtcTimeNow
@@ -10,7 +10,7 @@ import com.slaycard.basic.resultActionOfT
 import kotlinx.serialization.Serializable
 
 class GetAuctionsQueryHandler(
-    private val auctionRepository: Repository<Auction, AuctionId>
+    private val auctionRepository: AuctionRepository<Auction, AuctionId>
 )
     : QueryHandler<GetAuctionsQuery, GetAuctionsQuery.AuctionsDTO> {
 

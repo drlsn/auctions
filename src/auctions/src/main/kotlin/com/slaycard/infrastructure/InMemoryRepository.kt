@@ -1,11 +1,11 @@
 package com.slaycard.infrastructure
 
 import com.slaycard.basic.domain.Entity
-import com.slaycard.basic.domain.Repository
+import com.slaycard.entities.roots.AuctionRepository
 import io.ktor.util.collections.*
 
 
-class InMemoryRepository<TEntity, TId> : Repository<TEntity, TId>
+class InMemoryRepository<TEntity, TId> : AuctionRepository<TEntity, TId>
     where TEntity: Entity<TId> {
 
     private val items: ConcurrentMap<TId, TEntity> = ConcurrentMap()

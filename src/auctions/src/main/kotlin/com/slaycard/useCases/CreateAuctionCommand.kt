@@ -1,22 +1,26 @@
-package com.slaycard.application
+package com.slaycard.useCases
 
 import Auction
 import AuctionId
-import com.slaycard.entities.Money
+import com.slaycard.entities.shared.Money
 import com.slaycard.basic.cqrs.CommandHandler
-import com.slaycard.basic.domain.Repository
+import com.slaycard.entities.roots.AuctionRepository
 import kotlinx.serialization.Serializable
 import com.slaycard.basic.Result
 import com.slaycard.basic.addTo
 import com.slaycard.basic.resultAction
 
 class CreateAuctionCommandHandler(
-    private val auctionRepository: Repository<Auction, AuctionId>
+    private val auctionRepository: AuctionRepository<Auction, AuctionId>
 )
     : CommandHandler<CreateAuctionCommand> {
 
     override fun handle(command: CreateAuctionCommand): Result =
         resultAction { result ->
+
+            // val auctionBidsTracker = AuctionBidsTracker(..)
+            // val auctionInfo = AuctionInfo(..)
+
             val auction = Auction(auctionItemName = command.name, startingPrice = Money(command.originalPrice))
             if (!auction.validate().addTo(result).isSuccess)
                 return@resultAction

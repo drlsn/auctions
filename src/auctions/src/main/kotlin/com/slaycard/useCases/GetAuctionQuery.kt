@@ -1,16 +1,16 @@
-package com.slaycard.application
+package com.slaycard.useCases
 
 import Auction
 import AuctionId
 import com.slaycard.basic.*
 import com.slaycard.basic.cqrs.QueryHandler
 import com.slaycard.basic.domain.DomainEvent
-import com.slaycard.basic.domain.Repository
+import com.slaycard.entities.roots.AuctionRepository
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
 class GetAuctionQueryHandler(
-    private val auctionRepository: Repository<Auction, AuctionId>
+    private val auctionRepository: AuctionRepository<Auction, AuctionId>
 )
     : QueryHandler<GetAuctionQuery, GetAuctionQuery.AuctionDTO> {
 
@@ -19,7 +19,7 @@ class GetAuctionQueryHandler(
             if (query.auctionId.isEmpty())
                 it.fail("The id must be of proper format")
 
-            val auction = auctionRepository.get(AuctionId(query.auctionId))
+            val auction = auctionRepository.getById(AuctionId(query.auctionId))
             if (auction == null) {
                 it.fail("The auction does not exist");
                 return@resultActionOfT null

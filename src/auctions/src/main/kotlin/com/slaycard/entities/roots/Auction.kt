@@ -1,9 +1,9 @@
 import com.slaycard.basic.*
 import com.slaycard.basic.Result
 import com.slaycard.basic.domain.Entity
-import com.slaycard.entities.AuctionItemId
-import com.slaycard.entities.Money
-import com.slaycard.entities.UserId
+import com.slaycard.entities.shared.AuctionItemId
+import com.slaycard.entities.shared.Money
+import com.slaycard.entities.shared.UserId
 import com.slaycard.entities.events.AuctionCancelledEvent
 import com.slaycard.entities.events.AuctionFinishedEvent
 import com.slaycard.entities.events.AuctionPriceOutbidEvent
@@ -15,15 +15,15 @@ import kotlinx.serialization.Serializable
 typealias PropertyList = List<Pair<String, String>>
 
 class Auction(
-    id: AuctionId = AuctionId(uuid64()),
+    id: AuctionId = AuctionId(uuid64()),                            // Required Here
     val sellingUser: UserId = UserId(uuid64()),
     val auctionItemName: String = "Default Item",
     val auctionItemId: AuctionItemId = AuctionItemId(uuid64()),
     val quantity: Int = 1,
-    val startingPrice: Money = Money(100),
-    val originalDurationHours: Int = 72,
-    val description: String = "",
-    val properties: PropertyList = emptyList(),
+    val startingPrice: Money = Money(100),                          // Required Here
+    val originalDurationHours: Int = 72,                            // Required Here
+    val description: String = "",                                   // Modifiable
+    val properties: PropertyList = emptyList(),                     // Modifiable
     timeNow: LocalDateTime = getUtcTimeNow())
     : Entity<AuctionId>(id) {
 
