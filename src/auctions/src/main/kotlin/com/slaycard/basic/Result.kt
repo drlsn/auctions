@@ -1,6 +1,10 @@
 package com.slaycard.basic
 
 import com.slaycard.basic.Message.Companion.containErrors
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -42,6 +46,14 @@ fun resultAction(f: (result: Result) -> Unit): Result {
 inline fun<reified T> resultActionOfT(f: (result: Result) -> T?): ResultT<T> {
     var result = Result()
     return ResultT(f(result)).with(result)
+}
+
+suspend fun suspendedResultAction(f: suspend (result: Result) -> Unit): Deferred<Result> {
+    val result = Result()
+    val a = async {
+        f(result)
+    }.await()
+    return result
 }
 
 class ResultOf<T>(messages: MutableList<Message>) : Result(messages) {}

@@ -48,11 +48,11 @@ class AuctionExposedRepository {
 
 }
 
-object AuctionBidTable : UUIDTable("auctionBid") {
+object AuctionBidTable : UUIDTable("auctionBids") {
 
 }
 
-object AuctionDataTable : UUIDTable("auctionData") {
+object AuctionDescriptionsTable : UUIDTable("auctionDescriptions") {
     val description = varchar("description", 2000)
     val properties = json<PropertyList>(
         "propertyList",

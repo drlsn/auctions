@@ -11,10 +11,9 @@ import kotlinx.serialization.Serializable
 
 class GetAuctionQueryHandler(
     private val auctionRepository: AuctionRepository<Auction, AuctionId>
-)
-    : QueryHandler<GetAuctionQuery, GetAuctionQuery.AuctionDTO> {
+) : QueryHandler<GetAuctionQuery, GetAuctionQuery.AuctionDTO> {
 
-    override fun handle(query: GetAuctionQuery): ResultT<GetAuctionQuery.AuctionDTO> =
+    override suspend fun handle(query: GetAuctionQuery): ResultT<GetAuctionQuery.AuctionDTO> =
         resultActionOfT {
             if (query.auctionId.isEmpty())
                 it.fail("The id must be of proper format")

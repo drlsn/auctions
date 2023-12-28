@@ -1,7 +1,8 @@
 package com.slaycard.basic.cqrs
 
 import com.slaycard.basic.Result
+import kotlinx.coroutines.Deferred
 
 interface CommandHandler<TCommand> {
-    fun handle(command: TCommand): Result
+    suspend fun handle(command: TCommand): Deferred<Result>
 }

@@ -1,12 +1,14 @@
 package com.slaycard.entities.roots
 
-import com.slaycard.basic.domain.Entity
+import Auction
+import AuctionId
+import kotlinx.coroutines.Deferred
 
-interface AuctionRepository<TEntity, TId>
-    where TEntity: Entity<TId> {
+interface AuctionRepository {
 
-    suspend fun getById(id: TId): TEntity?
-    suspend fun add(entity: TEntity): Boolean
-    suspend fun update(entity: TEntity): Boolean
-    suspend fun delete(id: TId): Boolean
+    suspend fun getById(id: AuctionId): Deferred<Auction>
+    suspend fun add(entity: Auction): Deferred<Boolean>
+    suspend fun update(entity: Auction): Deferred<Boolean>
+    suspend fun delete(id: AuctionId): Deferred<Boolean>
+
 }
