@@ -16,7 +16,7 @@ typealias PropertyList = List<Pair<String, String>>
 
 class Auction(
     id: AuctionId = AuctionId(uuid64()),                            // Required Here
-    val sellingUser: UserId = UserId(uuid64()),
+    val sellingUser: UserId = UserId(uuid64()),                     // Required Here
     val auctionItemName: String = "Default Item",
     val auctionItemId: AuctionItemId = AuctionItemId(uuid64()),
     val quantity: Int = 1,

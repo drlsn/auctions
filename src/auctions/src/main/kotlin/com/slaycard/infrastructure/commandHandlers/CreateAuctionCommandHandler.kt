@@ -6,8 +6,8 @@ import com.slaycard.basic.addTo
 import com.slaycard.basic.cqrs.CommandHandler
 import com.slaycard.basic.suspendedResultAction
 import com.slaycard.entities.shared.Money
-import com.slaycard.infrastructure.AuctionBidTable
-import com.slaycard.infrastructure.AuctionDescriptionsTable
+import com.slaycard.infrastructure.data.AuctionBidTable
+import com.slaycard.infrastructure.data.AuctionDescriptionsTable
 import com.slaycard.infrastructure.dbQuery
 import com.slaycard.useCases.CreateAuctionCommand
 import kotlinx.coroutines.Deferred
@@ -31,11 +31,11 @@ class CreateAuctionCommandHandler : CommandHandler<CreateAuctionCommand> {
                     try { UUID.fromString(auction.id.value) }
                     catch (ex: IllegalArgumentException) { return@dbQuery false }
 
-                AuctionBidTable.insert {
-                    row -> row[id] = uuid
+                AuctionBidTable.insert {row ->
+                    row[id] = uuid
                 }
 
-                AuctionDescriptionsTable.insert {row ->
+                AuctionDescriptionsTable.insert { row ->
                     row[id] = uuid
                     row[description] = command.description ?: ""
                     row[properties] = emptyList()
