@@ -15,15 +15,17 @@ import kotlinx.serialization.Serializable
 typealias PropertyList = List<Pair<String, String>>
 
 class Auction(
-    id: AuctionId = AuctionId(uuid64()),                            // Required Here
-    val sellingUser: UserId = UserId(uuid64()),                     // Required Here
-    val auctionItemName: String = "Default Item",
-    val auctionItemId: AuctionItemId = AuctionItemId(uuid64()),
-    val quantity: Int = 1,
-    val startingPrice: Money = Money(100),                          // Required Here
-    val originalDurationHours: Int = 72,                            // Required Here
-    val description: String = "",                                   // Modifiable
-    val properties: PropertyList = emptyList(),                     // Modifiable
+    id: AuctionId,                                      // Required Here
+    val sellingUser: UserId,                            // Required Here
+    val auctionItemName: String,
+    val auctionItemId: AuctionItemId,
+    val quantity: Int,
+    val startingPrice: Money,                           // Required Here
+    val originalDurationHours: Int,                     // Required Here
+    val description: String,                            // Modifiable
+    val properties: PropertyList,                       // Modifiable
+    currentPrice: Money? = null,
+    startTime: LocalDateTime? = null,
     timeNow: LocalDateTime = getUtcTimeNow())
     : Entity<AuctionId>(id) {
 
@@ -32,6 +34,11 @@ class Auction(
             AuctionStartedEvent(
                 id, sellingUser, auctionItemName, startingPrice, quantity, description, properties, timeNow, originalDurationHours))
     }
+
+    var currentPrice: Money = currentPrice ?: startingPrice
+        private set
+
+    val startTime: LocalDateTime = startTime ?: timeNow
 
     fun validate(): Result =
         resultActionOfT { result ->
@@ -42,11 +49,6 @@ class Auction(
                 result.fail("The starting price must be greater than zero")
         }
 
-    var currentPrice: Money = startingPrice
-        get() = field
-        private set (value) { field = value }
-
-    val startTime: LocalDateTime = timeNow
     val endTime: LocalDateTime get() =
         when (cancelTime == null) {
             true -> startTime + DateTimePeriod(hours = originalDurationHours)

@@ -6,7 +6,6 @@ import com.slaycard.entities.shared.Money
 import com.slaycard.api.plugins.configureMonitoring
 import com.slaycard.api.plugins.configureRouting
 import com.slaycard.entities.roots.AuctionRepository
-import com.slaycard.useCases.CreateAuctionCommandHandler
 import com.slaycard.useCases.OutbidAuctionCommandHandler
 import com.slaycard.useCases.GetAuctionQueryHandler
 import com.slaycard.useCases.GetAuctionsQueryHandler
@@ -63,15 +62,13 @@ fun Application.configureApp() {
         "jdbc:postgresql://localhost:5432/sports_db",
         user="", password="")
 
-    "Dope".also(::println)
-
     transaction {
 
     }
 }
 
 val auctionsModule = module {
-    single<AuctionRepository<Auction, AuctionId>> {
+    single<AuctionRepository> {
         val repo = InMemoryRepository<Auction, AuctionId>()
         repo.add(Auction(auctionItemName = "Uriziel's Sword", startingPrice = Money(100)))
         repo
