@@ -5,13 +5,14 @@ import com.slaycard.api.plugins.configureRouting
 import com.slaycard.entities.roots.AuctionRepository
 import com.slaycard.useCases.OutbidAuctionCommandHandler
 import com.slaycard.useCases.GetAuctionQueryHandler
-import com.slaycard.useCases.GetAuctionsQueryHandler
 import com.slaycard.useCases.CreateAuctionCommandHandler
 import com.slaycard.basic.domain.DomainEvent
 import com.slaycard.entities.events.AuctionCancelledEvent
 import com.slaycard.entities.events.AuctionFinishedEvent
 import com.slaycard.entities.events.AuctionPriceOutbidEvent
 import com.slaycard.entities.events.AuctionStartedEvent
+import com.slaycard.infrastructure.data.AuctionsTable
+import com.slaycard.infrastructure.queryHandlers.GetAuctionsQueryHandler
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.*
 import io.ktor.server.application.*
@@ -21,6 +22,7 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.component.createScope
@@ -56,9 +58,13 @@ fun Application.configureApp() {
     configureMonitoring()
     configureRouting()
 
-    Database.connect(
+    val database = Database.connect(
         "jdbc:postgresql://localhost:5432/sports_db",
-        user="", password="")
+        user="postgres", password="")
+
+    transaction(database) {
+        SchemaUtils.createMissingTablesAndColumns(AuctionsTable)
+    }
 
     transaction {
 

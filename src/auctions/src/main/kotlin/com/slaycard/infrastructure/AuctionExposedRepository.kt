@@ -3,9 +3,13 @@ package com.slaycard.infrastructure
 import Auction
 import AuctionId
 import com.slaycard.entities.roots.AuctionRepository
+import com.slaycard.infrastructure.data.AuctionsTable
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.datetime.toJavaLocalDateTime
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.experimental.suspendedTransactionAsync
+import java.util.*
 
 class AuctionExposedRepository : AuctionRepository {
 
@@ -37,9 +41,34 @@ class AuctionExposedRepository : AuctionRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun add(entity: Auction): Deferred<Boolean> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun add(auction: Auction): Deferred<Boolean> =
+        dbQuery {
+            val result = AuctionsTable.insert {
+                row ->
+
+                row[id] = UUID.fromString(auction.id.value)
+                row[version] = 0
+                row[sellingUserId] = UUID.fromString(auction.sellingUserId.value)
+                row[auctionItemName] = auction.auctionItemName
+                row[auctionItemId] = UUID.fromString(auction.auctionItemId.value)
+                row[quantity] = auction.quantity
+                row[startingPrice] = auction.startingPrice.value
+                row[currentPrice] = auction.currentPrice.value
+                row[startTime] = auction.startTime.toJavaLocalDateTime()
+                row[originalDurationHours] = auction.originalDurationHours
+
+                if (auction.lastBiddingUserId != null)
+                    row[lastBiddingUserId] = UUID.fromString(auction.lastBiddingUserId!!.value)
+
+                if (auction.cancelTime != null)
+                    row[cancelTime] = auction.cancelTime!!.toJavaLocalDateTime()
+
+                row[description] = auction.description
+                row[properties] = auction.properties
+            }
+
+            result.insertedCount == 1
+        }
 
     override suspend fun update(entity: Auction): Deferred<Boolean> {
         TODO("Not yet implemented")

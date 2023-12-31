@@ -16,7 +16,7 @@ typealias PropertyList = List<Pair<String, String>>
 
 class Auction(
     id: AuctionId,                                      // Required Here
-    val sellingUser: UserId,                            // Required Here
+    val sellingUserId: UserId,                            // Required Here
     val auctionItemName: String,
     val auctionItemId: AuctionItemId,
     val quantity: Int,
@@ -32,7 +32,7 @@ class Auction(
     init {
         events.add(
             AuctionStartedEvent(
-                id, sellingUser, auctionItemName, startingPrice, quantity, description, properties, timeNow, originalDurationHours))
+                id, sellingUserId, auctionItemName, startingPrice, quantity, description, properties, timeNow, originalDurationHours))
     }
 
     var currentPrice: Money = currentPrice ?: startingPrice
@@ -49,36 +49,33 @@ class Auction(
                 result.fail("The starting price must be greater than zero")
         }
 
-    val endTime: LocalDateTime get() =
-        when (cancelTime == null) {
-            true -> startTime + DateTimePeriod(hours = originalDurationHours)
-            false -> cancelTime as LocalDateTime
-        }
+    val endTime: LocalDateTime
+        get() = Auction.getEndTime(startTime, originalDurationHours, cancelTime)
 
-    private var cancelTime: LocalDateTime? = null
-    var lastBiddingUser: UserId? = null
+    var cancelTime: LocalDateTime? = null
+    var lastBiddingUserId: UserId? = null
         private set
 
-    fun isFinished(timeNow: LocalDateTime): Boolean = timeNow >= endTime
+    fun isFinished(timeNow: LocalDateTime): Boolean = Auction.isFinished(timeNow, endTime)
     fun isCancelled(): Boolean = cancelTime != null
 
-    fun outbid(money: Money, user: UserId, timeNow: LocalDateTime = getUtcTimeNow()): Result {
+    fun outbid(money: Money, userId: UserId, timeNow: LocalDateTime = getUtcTimeNow()): Result {
         if (isFinished(timeNow))
             return failure("Can't outbid - The auction has finished")
 
         if (money.value < currentPrice.value * 1.05)
             return failure("The new price must be greater than previous by 5% or more")
 
-        if (lastBiddingUser != null && user == lastBiddingUser)
+        if (lastBiddingUserId != null && userId == lastBiddingUserId)
             return failure("Can't outbid if already has outbid by the same user")
 
-        if (user == sellingUser)
+        if (userId == sellingUserId)
             return failure("Can't bid own auction")
 
         currentPrice = money
-        lastBiddingUser = user
+        lastBiddingUserId = userId
 
-        events.add(AuctionPriceOutbidEvent(id, auctionItemName, user, money))
+        events.add(AuctionPriceOutbidEvent(id, auctionItemName, userId, money))
 
         return success()
     }
@@ -104,9 +101,18 @@ class Auction(
         if (isFinished(timeNow))
             return failure("Can't finish the auction before end time")
 
-        events.add(AuctionFinishedEvent(id, auctionItemName, currentPrice, lastBiddingUser, timeNow))
+        events.add(AuctionFinishedEvent(id, auctionItemName, currentPrice, lastBiddingUserId, timeNow))
 
         return success()
+    }
+
+    companion object {
+        fun isFinished(timeNow: LocalDateTime, endTime: LocalDateTime): Boolean = timeNow >= endTime
+        fun getEndTime(startTime: LocalDateTime, durationHours: Int, cancelTime: LocalDateTime?): LocalDateTime =
+            when (cancelTime == null) {
+                true -> startTime + DateTimePeriod(hours = durationHours)
+                false -> cancelTime as LocalDateTime
+            }
     }
 }
 

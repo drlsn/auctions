@@ -7,13 +7,12 @@ import com.slaycard.api.contracts.GetAuctionsApiQuery
 import com.slaycard.api.contracts.OutbidAuctionApiCommand
 import com.slaycard.useCases.*
 import com.slaycard.infrastructure.User
+import com.slaycard.infrastructure.queryHandlers.GetAuctionsQueryHandler
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-
-const val AUCTIONS_ROUTE = "/auctions"
 
 fun Application.configureRouting() {
     routing {

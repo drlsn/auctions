@@ -42,8 +42,8 @@ data class GetAuctionQuery(val auctionId: String) {
         val currentPrice: Int,
         val startTime: String,
         val originalDurationHours: Int,
-        val hasFinished: Boolean,
-        val wasCancelled: Boolean,
+        val isFinished: Boolean,
+        val isCancelled: Boolean,
         val events: List<DomainEvent>,
         val winnerId: String?,
         val cancelTime: String?)
@@ -52,7 +52,7 @@ data class GetAuctionQuery(val auctionId: String) {
 fun Auction.toDTO(timeNow: LocalDateTime): GetAuctionQuery.AuctionDTO =
     GetAuctionQuery.AuctionDTO(
         this.id.value,
-        this.sellingUser.value,
+        this.sellingUserId.value,
         this.auctionItemName,
         this.description,
         this.quantity,
@@ -63,5 +63,5 @@ fun Auction.toDTO(timeNow: LocalDateTime): GetAuctionQuery.AuctionDTO =
         this.isFinished(timeNow),
         this.isCancelled(),
         this.events,
-        this.lastBiddingUser?.value,
+        this.lastBiddingUserId?.value,
         cancelTime = if (this.isCancelled()) this.endTime.toString() else null)
