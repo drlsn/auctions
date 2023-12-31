@@ -1,14 +1,12 @@
 package com.slaycard.infrastructure
 
-import Auction
-import AuctionId
-import com.slaycard.entities.shared.Money
 import com.slaycard.api.plugins.configureMonitoring
 import com.slaycard.api.plugins.configureRouting
 import com.slaycard.entities.roots.AuctionRepository
 import com.slaycard.useCases.OutbidAuctionCommandHandler
 import com.slaycard.useCases.GetAuctionQueryHandler
 import com.slaycard.useCases.GetAuctionsQueryHandler
+import com.slaycard.useCases.CreateAuctionCommandHandler
 import com.slaycard.basic.domain.DomainEvent
 import com.slaycard.entities.events.AuctionCancelledEvent
 import com.slaycard.entities.events.AuctionFinishedEvent
@@ -68,13 +66,8 @@ fun Application.configureApp() {
 }
 
 val auctionsModule = module {
-    single<AuctionRepository> {
-        val repo = InMemoryRepository<Auction, AuctionId>()
-        repo.add(Auction(auctionItemName = "Uriziel's Sword", startingPrice = Money(100)))
-        repo
-    }
-
     scope<RequestScope> {
+        scoped<AuctionRepository>{ AuctionExposedRepository() }
         scopedOf(::CreateAuctionCommandHandler)
         scopedOf(::GetAuctionQueryHandler)
         scopedOf(::GetAuctionsQueryHandler)

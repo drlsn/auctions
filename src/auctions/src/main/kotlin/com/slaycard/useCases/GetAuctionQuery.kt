@@ -6,22 +6,23 @@ import com.slaycard.basic.*
 import com.slaycard.basic.cqrs.QueryHandler
 import com.slaycard.basic.domain.DomainEvent
 import com.slaycard.entities.roots.AuctionRepository
+import kotlinx.coroutines.Deferred
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
 class GetAuctionQueryHandler(
-    private val auctionRepository: AuctionRepository<Auction, AuctionId>
+    private val auctionRepository: AuctionRepository
 ) : QueryHandler<GetAuctionQuery, GetAuctionQuery.AuctionDTO> {
 
-    override suspend fun handle(query: GetAuctionQuery): ResultT<GetAuctionQuery.AuctionDTO> =
-        resultActionOfT {
+    override suspend fun handle(query: GetAuctionQuery): Deferred<ResultT<GetAuctionQuery.AuctionDTO>> =
+        suspendedResultActionOfT {
             if (query.auctionId.isEmpty())
                 it.fail("The id must be of proper format")
 
-            val auction = auctionRepository.getById(AuctionId(query.auctionId))
+            val auction = auctionRepository.getById(AuctionId(query.auctionId)).await()
             if (auction == null) {
                 it.fail("The auction does not exist");
-                return@resultActionOfT null
+                return@suspendedResultActionOfT null
             }
 
             auction.toDTO(getUtcTimeNow())

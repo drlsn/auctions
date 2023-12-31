@@ -34,7 +34,15 @@ fun Application.configureRouting() {
         post("/auctions") {
             executeCommandHandler<CreateAuctionApiCommand, CreateAuctionCommand, CreateAuctionCommandHandler> {
                 routeParams, apiCommand ->
-                CreateAuctionCommand(apiCommand.name, apiCommand.originalPrice)
+                CreateAuctionCommand(
+                    apiCommand.name,
+                    apiCommand.startingPrice,
+                    apiCommand.itemId,
+                    apiCommand.sellingUserId,
+                    apiCommand.quantity,
+                    apiCommand.originalDurationHours,
+                    apiCommand.description,
+                    apiCommand.properties)
             }
         }
 

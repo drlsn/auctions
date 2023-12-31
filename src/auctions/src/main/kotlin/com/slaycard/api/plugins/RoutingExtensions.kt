@@ -27,7 +27,7 @@ inline fun<reified TApiCommand: Any, TAppCommand, reified TAppCommandHandler: Co
         launch {
             val command = call.receive<TApiCommand>()
             val handler = it.get<TAppCommandHandler>()
-            val result = handler.handle(commandTransformer(call.parameters, command))
+            val result = handler.handle(commandTransformer(call.parameters, command)).await()
             when (result.isSuccess) {
                 true -> call.response.status(HttpStatusCode.Created)
                 false -> call.response.status(HttpStatusCode.BadRequest)
@@ -52,7 +52,7 @@ inline fun<reified TApiQuery: Any, TAppQuery, reified TAppQueryOut, reified TApp
                 return@launch
             }
 
-            val result = handler.handle(query)
+            val result = handler.handle(query).await()
             when (result.isSuccess) {
                 true -> call.response.status(HttpStatusCode.OK)
                 false -> call.response.status(HttpStatusCode.BadRequest)
