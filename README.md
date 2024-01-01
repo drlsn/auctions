@@ -8,7 +8,7 @@
 
 ## API
 
-**Access Roles**
+**Access Roles**  
 Each endpoint requires a certain role to be able to execute it successfully. Depending on a role the same endpoint might return different amounts of data. The roles, from the least to the most privileged, are:
 
 - Guest - no token required in authorization Header
