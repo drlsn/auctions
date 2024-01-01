@@ -10,6 +10,5 @@ data class CreateAuctionApiCommand(
     val itemId: String,
     val sellingUserId: String,
     val quantity: Int,
-    val originalDurationHours: Int = 72,
-    val description: String? = null,
-    val properties: PropertyList? = null)
+    val durationHours: Int = 72,
+    val description: String? = null)

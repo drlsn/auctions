@@ -3,7 +3,7 @@ package com.slaycard
 import Auction
 import AuctionId
 import com.slaycard.basic.plus
-import com.slaycard.basic.uuid64
+import com.slaycard.basic.uuid
 import com.slaycard.entities.shared.Money
 import com.slaycard.entities.shared.UserId
 import com.slaycard.entities.events.AuctionPriceOutbidEvent
@@ -52,7 +52,7 @@ class AuctionTest {
 
     private fun createDefaultAuction() =
         Auction(
-            AuctionId(uuid64()),
+            AuctionId(uuid()),
             UserId("user-1"),
             "Great Sword",
             AuctionItemId("sword-1"),

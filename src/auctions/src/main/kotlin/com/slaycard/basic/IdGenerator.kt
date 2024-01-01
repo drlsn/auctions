@@ -3,8 +3,8 @@ package com.slaycard.basic
 import java.nio.ByteBuffer
 import java.util.*
 
-fun uuid(): String = UUID.randomUUID().toString()
 fun uuid64(): String = UUID.randomUUID().toBase64()
+fun uuid(): String = UUID.randomUUID().toString()
 
 fun UUID.toBase64(): String {
     val byteArray = ByteBuffer.allocate(16)

@@ -2,12 +2,10 @@ package com.slaycard.useCases
 
 import Auction
 import AuctionId
-import PropertyList
 import com.slaycard.basic.Result
-import com.slaycard.basic.addTo
 import com.slaycard.basic.cqrs.CommandHandler
 import com.slaycard.basic.suspendedResultAction
-import com.slaycard.basic.uuid64
+import com.slaycard.basic.uuid
 import com.slaycard.entities.roots.AuctionRepository
 import com.slaycard.entities.shared.AuctionItemId
 import com.slaycard.entities.shared.Money
@@ -23,15 +21,14 @@ class CreateAuctionCommandHandler(
         suspendedResultAction { result ->
 
             val auction = Auction(
-                AuctionId(uuid64()),
+                AuctionId(uuid()),
                 UserId(command.sellingUserId),
                 command.name,
                 AuctionItemId(command.itemId),
                 command.quantity,
                 Money(command.startingPrice),
                 command.originalDurationHours,
-                command.description ?: "",
-                command.properties ?: emptyList())
+                command.description ?: "")
 
             result.add(auction.validate())
             if (!result.isSuccess)
@@ -50,5 +47,4 @@ data class CreateAuctionCommand(
     val sellingUserId: String,
     val quantity: Int,
     val originalDurationHours: Int = 72,
-    val description: String? = null,
-    val properties: PropertyList? = null)
+    val description: String? = null)

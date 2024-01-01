@@ -59,15 +59,11 @@ fun Application.configureApp() {
     configureRouting()
 
     val database = Database.connect(
-        "jdbc:postgresql://localhost:5432/sports_db",
-        user="postgres", password="")
+        "jdbc:postgresql://localhost:5432/auctions",
+        user="postgres", password="password")
 
     transaction(database) {
         SchemaUtils.createMissingTablesAndColumns(AuctionsTable)
-    }
-
-    transaction {
-
     }
 }
 

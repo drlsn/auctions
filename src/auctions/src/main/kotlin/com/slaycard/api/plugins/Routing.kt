@@ -39,9 +39,8 @@ fun Application.configureRouting() {
                     apiCommand.itemId,
                     apiCommand.sellingUserId,
                     apiCommand.quantity,
-                    apiCommand.originalDurationHours,
-                    apiCommand.description,
-                    apiCommand.properties)
+                    apiCommand.durationHours,
+                    apiCommand.description)
             }
         }
 

@@ -10,7 +10,6 @@ import com.slaycard.infrastructure.dbQuery
 import com.slaycard.useCases.GetAuctionQuery
 import com.slaycard.useCases.GetAuctionsQuery
 import kotlinx.coroutines.Deferred
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toKotlinLocalDateTime
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.selectAll
@@ -22,23 +21,23 @@ class GetAuctionsQueryHandler : QueryHandler<GetAuctionsQuery, GetAuctionsQuery.
             dbQuery {
                 GetAuctionsQuery.AuctionsDTO(
                     AuctionsTable.selectAll().map { row ->
-                        val startTime = row[AuctionsTable.startTime].toKotlinLocalDateTime()
-                        val durationHours = row[AuctionsTable.originalDurationHours]
-
-                        val cancelTime = row[AuctionsTable.cancelTime]?.toKotlinLocalDateTime()
-
-                        val timeNow = getUtcTimeNow()
-                        val isFinished = Auction.isFinished(timeNow, Auction.getEndTime(startTime, durationHours, cancelTime))
-
-                        row.toDTO(timeNow, isFinished, cancelTime)
+                        row.toDTO()
                     }
                 )
             }.await()
         }
 }
 
-fun ResultRow.toDTO(timeNow: LocalDateTime, isFinished: Boolean, cancelTime: LocalDateTime?): GetAuctionQuery.AuctionDTO =
-    GetAuctionQuery.AuctionDTO(
+fun ResultRow.toDTO(): GetAuctionQuery.AuctionDTO {
+    val startTime = this[AuctionsTable.startTime].toKotlinLocalDateTime()
+    val durationHours = this[AuctionsTable.originalDurationHours]
+
+    val cancelTime = this[AuctionsTable.cancelTime]?.toKotlinLocalDateTime()
+
+    val timeNow = getUtcTimeNow()
+    val isFinished = Auction.isFinished(timeNow, Auction.getEndTime(startTime, durationHours, cancelTime))
+
+    return GetAuctionQuery.AuctionDTO(
         this[AuctionsTable.id].toString(),
         this[AuctionsTable.sellingUserId].toString(),
         this[AuctionsTable.auctionItemName],
@@ -46,10 +45,12 @@ fun ResultRow.toDTO(timeNow: LocalDateTime, isFinished: Boolean, cancelTime: Loc
         this[AuctionsTable.quantity],
         this[AuctionsTable.startingPrice],
         this[AuctionsTable.currentPrice],
-        this[AuctionsTable.startTime].toString(),
-        this[AuctionsTable.originalDurationHours],
+        startTime.toString(),
+        durationHours,
         isFinished,
         isCancelled = cancelTime != null,
         events = emptyList(),
         this[AuctionsTable.lastBiddingUserId].toString(),
-        cancelTime = cancelTime?.toString())
+        cancelTime = cancelTime?.toString()
+    )
+}

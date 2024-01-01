@@ -15,15 +15,14 @@ import kotlinx.serialization.Serializable
 typealias PropertyList = List<Pair<String, String>>
 
 class Auction(
-    id: AuctionId,                                      // Required Here
-    val sellingUserId: UserId,                            // Required Here
+    id: AuctionId,
+    val sellingUserId: UserId,
     val auctionItemName: String,
     val auctionItemId: AuctionItemId,
     val quantity: Int,
-    val startingPrice: Money,                           // Required Here
-    val originalDurationHours: Int,                     // Required Here
-    val description: String,                            // Modifiable
-    val properties: PropertyList,                       // Modifiable
+    val startingPrice: Money,
+    val originalDurationHours: Int,
+    val description: String,
     currentPrice: Money? = null,
     startTime: LocalDateTime? = null,
     timeNow: LocalDateTime = getUtcTimeNow())
@@ -32,7 +31,7 @@ class Auction(
     init {
         events.add(
             AuctionStartedEvent(
-                id, sellingUserId, auctionItemName, startingPrice, quantity, description, properties, timeNow, originalDurationHours))
+                id, sellingUserId, auctionItemName, startingPrice, quantity, description, timeNow, originalDurationHours))
     }
 
     var currentPrice: Money = currentPrice ?: startingPrice

@@ -62,7 +62,7 @@ suspend inline fun<reified T> suspendedResultActionOfT(
             val result = Result()
             val value = f(result)
 
-            ResultT(value)
+            ResultT(value).with(result)
         }
     }
 }

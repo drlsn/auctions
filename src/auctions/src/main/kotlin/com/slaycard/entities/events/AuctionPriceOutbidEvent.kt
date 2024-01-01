@@ -3,7 +3,7 @@ package com.slaycard.entities.events
 import AuctionId
 import com.slaycard.basic.domain.DomainEvent
 import com.slaycard.basic.getUtcTimeNow
-import com.slaycard.basic.uuid64
+import com.slaycard.basic.uuid
 import com.slaycard.entities.shared.Money
 import com.slaycard.entities.shared.UserId
 import kotlinx.datetime.LocalDateTime
@@ -15,6 +15,6 @@ class AuctionPriceOutbidEvent(
     val itemName: String,
     val byUser: UserId,
     val newPrice: Money,
-    override val id: String = uuid64(),
+    override val id: String = uuid(),
     override val utcTimeOccurred: LocalDateTime = getUtcTimeNow()
 ) : DomainEvent()
