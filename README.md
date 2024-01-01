@@ -9,9 +9,11 @@
 ## API
 
 **Access Roles**
-- Guest - no token required
-- Any Signed User - token required
-- Resource Owner User - token required and must be owner of the resource
+Each endpoint requires a certain role to be able to execute it successfully. Depending on a role the same endpoint might return different amounts of data. The roles, from the least to the most privileged, are:
+
+- Guest - no token required in authorization Header
+- Any Signed User - token required identyifing the user
+- Resource Owner User - token required and the user must be the owner of the resource
 - Admin - token required with administrator privileges
 
 &nbsp;&nbsp;&nbsp;&nbsp;  
@@ -29,7 +31,16 @@
 &nbsp;&nbsp;&nbsp;&nbsp;  
 ## API Details
 
-### Get all users
+Data resources are accessed via standard HTTP requests in UTF-8 format to an API endpoint. The Web API uses the following HTTP verbs:
+
+| Http Method | Description |
+| --- | --- |
+| GET | Retrieves resources |
+| POST | Creates resources |
+| PUT | Changes and/or replaces resources or collections |
+| DELETE | Deletes resources |
+
+### API Endpoint - Get auction
 
 | HTTP Method | Endpoint | Description | Access Role |
 | --- | --- | --- | --- | 
@@ -37,12 +48,12 @@
 
 #### Description
 
-Get a list of all users, for administrators only.
+Get details for a specific auction.
 
 #### Success Response
 
 ##### *200*
-&nbsp;&nbsp;&nbsp;&nbsp; Object containing an array of users
+&nbsp;&nbsp;&nbsp;&nbsp; Object containing a value with auction
 
 &nbsp;&nbsp;&nbsp;&nbsp; *Fields*
 - object
