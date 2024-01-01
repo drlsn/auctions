@@ -32,6 +32,8 @@ Each endpoint requires a certain role to be able to execute it successfully. Dep
 &nbsp;&nbsp;&nbsp;&nbsp;  
 ## API Details
 
+### Requests  
+
 Data resources are accessed via standard HTTP requests in UTF-8 format to an API endpoint. The Web API uses the following HTTP verbs:
 
 | Http Method | Description |
@@ -40,6 +42,34 @@ Data resources are accessed via standard HTTP requests in UTF-8 format to an API
 | POST | Creates resources |
 | PUT | Changes and/or replaces resources or collections |
 | DELETE | Deletes resources |
+
+### Responses  
+
+Web API normally returns JSON in the response body. In case of some errors it will return HTTP status code (500 or 403). The response body JSON is a special "Result" object which might contain a value - if it's a GET request, and/or it might additionally contain messages depending on how the request was processed. A message 
+
+&nbsp;&nbsp;&nbsp;&nbsp; *Result Fields*
+
+- object
+  - messages - array of objects
+    - object
+      - level - object
+        - name - string; could be "error", "warning" or "info"
+      - content - string; message
+      
+*Example:*
+```
+HTTP/1.1 400 Bad Request
+{
+    "messages": [
+        {
+            "level": {
+                "name": "error"
+            },
+            "content": "The new price must be greater than previous by 5% or more"
+        }
+    ]
+}
+```
 
 ### API Endpoint - Get auction
 
