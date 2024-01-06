@@ -102,7 +102,6 @@ Get details for a specific auction.
     - isFinished - boolean
     - inCancelled - boolean
     - winnerUserId - string; uuid format
-    - events
 
 &nbsp;&nbsp;&nbsp;&nbsp; *Example*
 
@@ -120,7 +119,6 @@ Get details for a specific auction.
       "originalDurationHours": 72,
       "isFinished": false,
       "isCancelled": false,
-      "events": [],
       "winnerId": "null",
       "cancelTime": null
   }
