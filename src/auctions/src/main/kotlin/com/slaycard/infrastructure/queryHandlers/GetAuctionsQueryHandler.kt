@@ -49,7 +49,6 @@ fun ResultRow.toDTO(): GetAuctionQuery.AuctionDTO {
         durationHours,
         isFinished,
         isCancelled = cancelTime != null,
-        events = emptyList(),
         this[AuctionsTable.lastBiddingUserId].toString(),
         cancelTime = cancelTime?.toString()
     )

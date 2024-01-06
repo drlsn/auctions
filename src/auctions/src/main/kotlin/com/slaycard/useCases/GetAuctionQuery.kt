@@ -4,7 +4,6 @@ import Auction
 import AuctionId
 import com.slaycard.basic.*
 import com.slaycard.basic.cqrs.QueryHandler
-import com.slaycard.basic.domain.DomainEvent
 import com.slaycard.entities.roots.AuctionRepository
 import kotlinx.coroutines.Deferred
 import kotlinx.datetime.LocalDateTime
@@ -44,7 +43,6 @@ data class GetAuctionQuery(val auctionId: String) {
         val originalDurationHours: Int,
         val isFinished: Boolean,
         val isCancelled: Boolean,
-        val events: List<DomainEvent>,
         val winnerId: String?,
         val cancelTime: String?)
 }
@@ -62,6 +60,5 @@ fun Auction.toDTO(timeNow: LocalDateTime): GetAuctionQuery.AuctionDTO =
         this.originalDurationHours,
         this.isFinished(timeNow),
         this.isCancelled(),
-        this.events,
         this.lastBiddingUserId?.value,
         cancelTime = if (this.isCancelled()) this.endTime.toString() else null)

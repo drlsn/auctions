@@ -61,26 +61,3 @@ inline fun<reified TApiQuery: Any, TAppQuery, reified TAppQueryOut, reified TApp
             call.respond(result)
         }
     }
-
-//inline fun<reified T> ApplicationCall.receiveParameters(): T? {
-//    println("DOPE 1:")
-//    val cs = T::class.java.constructors
-//    val args = T::class.java.constructors.first().parameters.map {
-//        println("Inside: ")
-//        if (it.name == null || it.type.kotlin.isValue || !this.parameters.contains(it.name!!))
-//            return null
-//
-//        if (!this.parameters.contains(it.name!!))
-//            return@map null
-//
-//        this.parameters[it.name!!]
-//    }
-//    println("DOPE 2: $args")
-//
-//    val clazz = Class.forName(T::class.name)
-//    val constructor: Constructor<*> = clazz.getConstructor(*args.map { T::class.java }.toTypedArray())
-//    val instance = constructor.newInstance(args)
-//
-//    return instance as T
-//}
-//
