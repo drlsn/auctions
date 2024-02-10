@@ -19,7 +19,8 @@ Each endpoint requires a certain role to be able to execute it successfully. Dep
 
 &nbsp;&nbsp;&nbsp;&nbsp;  
 **Endpoints**
-
+<br>  
+[Routes Code Implementation](https://github.com/netspie/auctions-api/blob/main/src/auctions/src/main/kotlin/com/slaycard/api/plugins/Routing.kt)
 | HTTP Method | Endpoint | Description | Access Role |
 | --- | --- | --- | --- | 
 | `GET` | `/auctions/{auctionId}` | Get specific auction details | Guest |
