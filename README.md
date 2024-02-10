@@ -71,7 +71,7 @@ HTTP/1.1 400 Bad Request
 }
 ```
 
-### API Endpoint - Get auction
+### Example API Endpoint - Get auction
 
 | HTTP Method | Endpoint | Description | Access Role |
 | --- | --- | --- | --- | 
