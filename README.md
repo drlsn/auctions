@@ -1,6 +1,6 @@
 # Auctions API
 
-&nbsp;&nbsp;&nbsp;&nbsp; Auction service which goal is to serve in an internal network of a distributed system.
+&nbsp;&nbsp;&nbsp;&nbsp; Auctions API which original purpose was to serve as an internal service of distributed system for a potential game system for trading items between players.
 
 ### Technologies
 
