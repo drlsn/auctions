@@ -6,6 +6,15 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp; Kotlin, Ktor, Exposed/PostgreSQL, Firebase Authentication
 
+### Architecture
+
+&nbsp;&nbsp;&nbsp;&nbsp; Project is divided to layers based on varation of clean architecture and CQRS with repository pattern. It also containes basic layer for the most common extensions and building blocks which can be used anywhere.
+  - [Basic layer](https://github.com/netspie/auctions-api/tree/main/src/auctions/src/main/kotlin/com/slaycard/basic)
+  - [Domain Entities](https://github.com/netspie/auctions-api/tree/main/src/auctions/src/main/kotlin/com/slaycard/entities)
+  - [Use Cases](https://github.com/netspie/auctions-api/tree/main/src/auctions/src/main/kotlin/com/slaycard/useCases)
+  - [Infrastructure](https://github.com/netspie/auctions-api/tree/main/src/auctions/src/main/kotlin/com/slaycard/infrastructure)
+  - [Auction Entity Tests](https://github.com/netspie/auctions-api/blob/main/src/auctions/src/test/kotlin/com/slaycard/AuctionTest.kt)
+  
 ## API
 
 **Access Roles**  
